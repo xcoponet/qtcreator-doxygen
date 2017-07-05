@@ -36,62 +36,65 @@ namespace Internal {
 
 struct DoxygenResponse
 {
-    DoxygenResponse() : error(false) {}
-    bool error;
-    QString stdOut;
-    QString stdErr;
-    QString message;
+	DoxygenResponse() : error(false) {}
+	bool error;
+	QString stdOut;
+	QString stdErr;
+	QString message;
 };
 
 class DoxygenPlugin : public ExtensionSystem::IPlugin
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "Doxygen.json")
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "Doxygen.json")
 
 public:
-    DoxygenPlugin();
-    ~DoxygenPlugin();
+	DoxygenPlugin();
+	~DoxygenPlugin();
 
-    bool initialize(const QStringList &arguments, QString *errorString);
-    void extensionsInitialized();
-    ShutdownFlag aboutToShutdown();
+	bool initialize(const QStringList &arguments, QString *errorString);
+	void extensionsInitialized();
+	ShutdownFlag aboutToShutdown();
 
-    void setSettings(const DoxygenSettingsStruct &s);
-    DoxygenSettingsStruct settings() const;
-    void runDoxygen(const QStringList &arguments,
-                               QString workingDirectory = QString());
+	void setSettings(const DoxygenSettingsStruct &s);
+	DoxygenSettingsStruct settings() const;
+	void runDoxygen(const QStringList &arguments,
+							   QString workingDirectory = QString());
 
-    static DoxygenPlugin* instance();
+	static DoxygenPlugin* instance();
 
 private:
-    static DoxygenPlugin* m_instance;
-    DoxygenSettings* m_settings;
-    QAction* m_doxygenCreateDocumentationAction;
-    QAction* m_doxygenDocumentFileAction;
-    QAction* m_doxygenDocumentOpenedProjectAction;
-    QAction* m_doxygenDocumentActiveProjectAction;
-    QAction* m_doxygenBuildDocumentationAction;
-    QAction* m_doxygenDoxyfileWizardAction;
-    QProcess* m_process;
+	static DoxygenPlugin* m_instance;
+	DoxygenSettings* m_settings;
+	QAction* m_doxygenCreateDocumentationAction;
+	QAction* m_doxygenDocumentFileAction;
+	QAction* m_doxygenDocumentOpenedProjectAction;
+	QAction* m_doxygenDocumentActiveProjectAction;
+	QAction* m_doxygenDocumentAddFileCommentAction;
+	QAction* m_doxygenBuildDocumentationAction;
+	QAction* m_doxygenDoxyfileWizardAction;
+	QProcess* m_process;
 
 signals:
-    void doxyDocumentEntity(const DoxygenSettingsStruct &DoxySettings, Core::IEditor *editor);
-    void doxyDocumentFile(const DoxygenSettingsStruct &DoxySettings, Core::IEditor *editor);
-    void doxyDocumentSpecificProject(const DoxygenSettingsStruct &DoxySettings);
-    void doxyDocumentCurrentProject(const DoxygenSettingsStruct &DoxySettingss);
+	void doxyDocumentEntity(const DoxygenSettingsStruct &DoxySettings, Core::IEditor *editor);
+	void doxyCurrentAddFileComment(const DoxygenSettingsStruct &DoxySettings, Core::IEditor *editor);
+	void doxyDocumentFile(const DoxygenSettingsStruct &DoxySettings, Core::IEditor *editor);
+	void doxyDocumentSpecificProject(const DoxygenSettingsStruct &DoxySettings);
+	void doxyDocumentCurrentProject(const DoxygenSettingsStruct &DoxySettingss, Core::IEditor *editor);
 
 private slots:
-    void documentEntity();
-    void documentFile();
-    void documentSpecificProject();
-    void documentCurrentProject();
+	void documentEntity();
+	void documentFile();
+	void documentSpecificProject();
+	void documentCurrentProject();
+	void addCurrentFileComment();
 
-    bool buildDocumentation();
-    void doxyfileWizard();
-    void externalString(const QString&);
+	bool buildDocumentation();
+	void doxyfileWizard();
+	void externalString(const QString&);
 
-    void processExited(int returnCode, QProcess::ExitStatus exitStatus);
-    void readProcessOutput(void);
+	void processExited(int returnCode, QProcess::ExitStatus exitStatus);
+	void readProcessOutput(void);
 };
 
 } // namespace Internal
